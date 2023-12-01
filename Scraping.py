@@ -28,7 +28,7 @@ def Cordoba():
     productosCba = list()
     count = 0
     for i in productos_Cba:
-        if count < 26:
+        if count < 17:
             productosCba.append(i.text)
         else:
             break
@@ -39,13 +39,13 @@ def Cordoba():
     precios = list()
     count = 0
     for i in preciosCba:
-        if count < 25:
+        if count < 17:
             precios.append(i.text.replace('\t', '').replace('\n', ''))
         else:
             break
         count += 1
 
-    Pp = pd.DataFrame({"Nombre Producto": productosCba, "Precio Producto Cba": precios}, index=list(range(1, 26)))
+    Pp = pd.DataFrame({"Nombre Producto": productosCba, "Precio Producto Cba": precios}, index=list(range(1, 18)))
     print(Pp)
 
     # Guarda el DataFrame en un archivo CSV
@@ -59,29 +59,33 @@ def BsAs():
     productosBsAs = list()
     count = 0
     for i in productos_BsAs:
-        if count < 26:
-            productosBsAs.append(i.text)
+        if count < 17:      #la página sólo cuenta con 17 elementos así que si se busca un número mayor genera problemas
+            productosBsAs.append(i.span.text.strip())       #se extrae sólo un campo del div y no todo se texto, en ese caso lo que está contenido dentro de span
         else:
             break
         count += 1
 
-    # Busca los precios de Buenos aires
-    preciosBsAs = soup.find_all('div', class_='product-link')
+    preciosTotales = soup1.find_all('li', class_='current-price')   #en vez de buscar dentro de un div se busca un 'li'
     precios = list()
     count = 0
-    for i in preciosBsAs:
-        if count < 25:
-            precios.append(i.text.replace('\t', '').replace('\n', ''))
+
+    for i in preciosTotales:
+        if count < 17:      #de nuevo se busca sólo hasta 17 elementos para evitar conflictos
+            precios.append(i.text.strip())          #se extrae el contenido usando strip 
         else:
             break
         count += 1
 
-    Pp = pd.DataFrame({"Nombre Producto": productosBsAs, "Precio Producto Buenos Aires": precios}, index=list(range(1, 26)))
+    # Imprime las listas antes de crear el DataFrame
+    print("Productos:", productosBsAs)
+    print("Precios:", precios)
+
+    Pp = pd.DataFrame({"PRODUCTOS": productosBsAs, "PRESENTACION-PRECIOS": precios}, index=list(range(1, 18)))      #se cambia el tamaño nuevamente
     print(Pp)
 
-    # Guarda el DataFrame en un archivo CSV
     Pp.to_csv("ProductosBsAs.csv", index=False)
-    return Pp
+
+BsAs()
            
     
 
@@ -90,7 +94,7 @@ def BsAs():
 def ProductosCoinciden():
     # Carga los archivos CSV en DataFrames
     df1 = pd.read_csv("ProductosCba.csv")
-    df2 = pd.read_csv("productosBsAs.csv")
+    df2 = pd.read_csv("ProductosBsAs.csv")
 
     # Encuentra los nombres de productos que coinciden
     nombres_coinciden = []
@@ -115,7 +119,7 @@ def ProductosCoinciden():
         }, ignore_index=True)
 
     # Guarda el resultado en un nuevo CSV
-    resultados.to_csv("resultado.csv", index=False)
+    resultados.to_csv("Resultado.csv", index=False)
 
 
 
@@ -124,4 +128,4 @@ Cordoba()
 print("Precios de productos en BsAs")
 BsAs()
 ProductosCoinciden()
-# ComparacionPrecios()  # Función comentada por ahora
+ 

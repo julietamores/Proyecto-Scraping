@@ -20,7 +20,7 @@ def Cordoba():
     productosCba = list()
     count = 0
     for i in productosTotales:
-        if count < 26:
+        if count < 17:
             productosCba.append(i.text)
         else:
             break
@@ -33,14 +33,14 @@ def Cordoba():
     count = 0
 
     for i in preciosTotales:
-        if count < 25:
+        if count < 17:
             precios.append(i.text.replace('\t', '').replace('\n', ''))
         else:
             break
         count += 1
    
 
-    Pp = pd.DataFrame({"PRODUCTOS": productosCba, "PRESENTACION-PRECIOS": precios}, index=list(range(1, 26)))
+    Pp = pd.DataFrame({"PRODUCTOS": productosCba, "PRESENTACION-PRECIOS": precios}, index=list(range(1, 18)))
     print(Pp)
 
     Pp.to_csv("Productos.csv", index=False)
